@@ -1,0 +1,39 @@
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "prisma/prisma.service";
+import { CreateUserRepositoryInput } from "./types/create-user-repository.input";
+import { UpdateUserRepositoryInput } from "./types/update-user-repository.input";
+
+@Injectable()
+export class UserRepository {
+    constructor(private readonly prisma: PrismaService) { }
+    async createUser(data: CreateUserRepositoryInput) {
+        return await this.prisma.user.create({
+            data: data
+        });
+    }
+    async findAll() {
+        return await this.prisma.user.findMany();
+    }
+    async findOne(id: number) {
+        return await this.prisma.user.findUnique({
+            where: {
+                id: id,
+            },
+        });
+    }
+    async updateUser(id: number, data: UpdateUserRepositoryInput) {
+        return await this.prisma.user.update({
+            where: {
+                id: id
+            },
+            data: data
+        })
+    }
+    async deleteUser(id: number) {
+        return await this.prisma.user.delete({
+            where: {
+                id: id,
+            },
+        });
+    }
+}
