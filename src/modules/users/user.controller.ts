@@ -10,13 +10,24 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user-create.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserUseCase } from './use-cases/create-user.usecase';
+import { FindAllUsersUseCase } from './use-cases/find-all-users.usecase';
+import { FindUserByIdUseCase } from './use-cases/find-user-by-id.usecase';
+import { UpdateUserUseCase } from './use-cases/update-user.usecase';
+import { DeleteUserUseCase } from './use-cases/delete-user.usecase';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly createUserUseCase: CreateUserUseCase,
+    private readonly findAllUsersUseCase: FindAllUsersUseCase,
+    private readonly findUserById: FindUserByIdUseCase,
+    private readonly updateUserUseCase:UpdateUserUseCase,
+    private readonly deleteUserUseCase: DeleteUserUseCase,
+  ) {}
   @Post()
   async createUser(@Body() body: CreateUserDto) {
-    const user = await this.userService.createUser({
+    const user = await this.createUserUseCase.execute({
       email: body.email,
       password: body.password,
     });
@@ -34,7 +45,7 @@ export class UserController {
   }
   @Get()
   async findAll() {
-    const users = await this.userService.findAll();
+    const users = await this.findAllUsersUseCase.execute();
     return {
       message: 'Users retrieved successfully',
       status: 'success',
@@ -43,7 +54,7 @@ export class UserController {
   }
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const user = await this.userService.findOne(Number(id));
+    const user = await this.findUserById.execute(Number(id));
     if(!user){
         return {
             message: 'User not found',
@@ -58,7 +69,7 @@ export class UserController {
   }
   @Patch(':id')
   async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    const user= await this.userService.updateUser(Number(id), body);
+    const user= await this.updateUserUseCase.execute(Number(id), body);
     if(!user){
         return {
             message: 'User update failed',
@@ -73,6 +84,6 @@ export class UserController {
   }
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
-    return await this.userService.deleteUser(Number(id));
+    return await this.deleteUserUseCase.execute(Number(id));
   }
 }

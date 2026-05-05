@@ -1,22 +1,24 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, MinLength} from 'class-validator';
+import { ValidationMessage } from '../../../common/constants/validation.messages';
+import { Role, Status } from 'src/generated/prisma/client';
 export class UpdateUserDto {
     @IsOptional()
-    @IsNotEmpty({message: 'email is not empty'})
-    @IsEmail({},{message: 'Invalid email format'})
+    @IsNotEmpty({message: ValidationMessage.EMAIL.REQUIRED})
+    @IsEmail({}, {message: ValidationMessage.EMAIL.INVALID})
     email?: string;
 
     @IsOptional()
-    @IsNotEmpty({message: 'Password is not empty'})
-    @MinLength(6, {message: 'Password must be at least 6 characters long'})
+    @IsNotEmpty({message: ValidationMessage.PASSWORD.REQUIRED})
+    @MinLength(6, {message: ValidationMessage.PASSWORD.MIN_LENGTH})
     password?: string;
 
     @IsOptional()
-    @IsNotEmpty({message: 'role is not empty'})
-    @IsEnum(['ADMIN', 'USER'], {message: 'Role must be either ADMIN or USER'})
+    @IsNotEmpty({message: ValidationMessage.ROLE.REQUIRED})
+    @IsEnum(Role, {message: ValidationMessage.ROLE.INVALID})
     role?: string;
 
     @IsOptional()
-    @IsNotEmpty({message: 'status is not empty'})
-    @IsEnum(['ACTIVE', 'BANNED'], {message: 'Status must be either ACTIVE or BANNED'})
+    @IsNotEmpty({message: ValidationMessage.STATUS.REQUIRED})
+    @IsEnum(Status, {message: ValidationMessage.STATUS.INVALID})
     status?: string;
 }

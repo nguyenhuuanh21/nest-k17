@@ -1,10 +1,11 @@
 import { IsEmail, IsNotEmpty, MinLength} from 'class-validator';
+import { ValidationMessage } from '../../../common/constants/validation.messages';
 export class CreateUserDto {
-    @IsNotEmpty({message: 'email is required'})
-    @IsEmail({},{message: 'Invalid email format'})
+    @IsNotEmpty({message: ValidationMessage.EMAIL.REQUIRED})
+    @IsEmail({}, {message: ValidationMessage.EMAIL.INVALID})
     email!: string;
 
-    @IsNotEmpty({message: 'Password is required'})
-    @MinLength(6, {message: 'Password must be at least 6 characters long'})
+    @IsNotEmpty({message: ValidationMessage.PASSWORD.REQUIRED})
+    @MinLength(6, {message: ValidationMessage.PASSWORD.MIN_LENGTH})
     password!: string;
 }
