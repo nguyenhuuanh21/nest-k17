@@ -6,38 +6,61 @@ import { UserMapper } from "src/modules/users/mappers/user.mapper";
 export class AuthTokenFactory {
     constructor(
         private readonly jwtService: JwtService
-    ){}
+    ) { }
     async createAccessTokenPayload(user: {
-        id:number,
-        role:string,
-        email:string
-    }){
+        id: number,
+        role: string,
+        email: string
+    }) {
         return {
             sub: user.id,
             name: user.role,
-            email: user.email
+            email: user.email,
+            type: "access"
+        };
+    }
+    async createRefreshTokenPayload(user: {
+        id: number,
+        role: string,
+        email: string
+    }) {
+        return {
+            sub: user.id,
+            name: user.role,
+            email: user.email,
+            type: "refresh"
         };
     }
     async createAccessToken(user: {
-        id:number,
-        role:string,
-        email:string
-    }){
+        id: number,
+        role: string,
+        email: string
+    }) {
         const payload = await this.createAccessTokenPayload(user);
-        return await this.jwtService.signAsync(payload);
+        return await this.jwtService.signAsync(payload,{ expiresIn: "1h" });
+    }
+    async createRefreshToken(user: {
+        id: number,
+        role: string,
+        email: string
+    }) {
+        const payload = await this.createRefreshTokenPayload(user);
+        return await this.jwtService.signAsync(payload,{expiresIn:"7d"});
     }
     async createLoginResponse(user: {
-        id:number,
-        email:string,
-        role:string,
-        status:string,
+        id: number,
+        email: string,
+        role: string,
+        status: string,
         createdAt: Date,
         updatedAt: Date
-    }){
+    }) {
         const accessToken = await this.createAccessToken(user);
+        const refreshToken = await this.createRefreshToken(user);
         return {
             accessToken,
-            user:UserMapper.toResponse(user)
+            refreshToken,
+            user: UserMapper.toResponse(user)
         }
     }
 }

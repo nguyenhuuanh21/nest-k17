@@ -8,10 +8,11 @@ import { PasswordHasherStrategy } from "./strategies/password-hasher.strategy";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthTokenFactory } from "./factories/auth-token.factory";
+import { SessionRepository } from "../sessions/repositories/session.repository";
 
 @Module({
     controllers:[AuthController],
-    providers:[RegisterUseCase,LoginUseCase,AuthTokenFactory,BcryptPasswordHasherStrategy,{
+    providers:[RegisterUseCase,LoginUseCase,AuthTokenFactory,BcryptPasswordHasherStrategy,SessionRepository,{
         provide: PasswordHasherStrategy,
         useClass: BcryptPasswordHasherStrategy
     }],
