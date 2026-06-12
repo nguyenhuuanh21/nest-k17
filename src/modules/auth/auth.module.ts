@@ -9,10 +9,12 @@ import { JwtModule, JwtService } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthTokenFactory } from "./factories/auth-token.factory";
 import { SessionRepository } from "../sessions/repositories/session.repository";
+import { LogoutUseCase } from "./use-case/logout.use-case";
+import { RefreshTokenUseCase } from "./use-case/refresh-token.use-case";
 
 @Module({
     controllers:[AuthController],
-    providers:[RegisterUseCase,LoginUseCase,AuthTokenFactory,BcryptPasswordHasherStrategy,SessionRepository,{
+    providers:[RegisterUseCase,LoginUseCase,LogoutUseCase,RefreshTokenUseCase,AuthTokenFactory,BcryptPasswordHasherStrategy,SessionRepository,{
         provide: PasswordHasherStrategy,
         useClass: BcryptPasswordHasherStrategy
     }],
