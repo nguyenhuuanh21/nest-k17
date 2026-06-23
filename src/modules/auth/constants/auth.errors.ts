@@ -48,5 +48,10 @@ export const AuthError = {
     message: 'Không tìm thấy phiên đăng nhập đang hoạt động',
     statusCode: HttpStatus.UNAUTHORIZED,
   },
+  FORBIDDEN: {
+    code: 'AUTH.FORBIDDEN',
+    message: 'Bạn không có quyền thực hiện hành động này',
+    statusCode: HttpStatus.FORBIDDEN,
+},
 } as const;
 

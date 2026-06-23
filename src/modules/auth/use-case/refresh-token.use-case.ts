@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { PasswordHasherStrategy } from "../strategies/password-hasher.strategy";
+import { PasswordHasherStrategy } from "../strategies/hashing/password-hasher.strategy";
 import { SessionRepository } from "src/modules/sessions/repositories/session.repository";
 import { UserRepository } from "src/modules/users/repositories/user.repository";
 import { JwtService } from "@nestjs/jwt";

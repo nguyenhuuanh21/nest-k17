@@ -6,6 +6,8 @@ import {
   Get,
   Body,
   Param,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user-create.dto';
@@ -15,6 +17,7 @@ import { FindAllUsersUseCase } from './use-cases/find-all-users.usecase';
 import { FindUserByIdUseCase } from './use-cases/find-user-by-id.usecase';
 import { UpdateUserUseCase } from './use-cases/update-user.usecase';
 import { DeleteUserUseCase } from './use-cases/delete-user.usecase';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -43,18 +46,20 @@ export class UserController {
       data: user,
     };
   }
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    const users = await this.findAllUsersUseCase.execute();
+  async findAll(@Req()req:any) {
+    const users = await this.findAllUsersUseCase.execute(req.user);
     return {
       message: 'Users retrieved successfully',
       status: 'success',
       data: users,
     };
   }
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.findUserById.execute(Number(id));
+  async findOne(@Param('id') id: string,@Req ()req:any) {
+    const user = await this.findUserById.execute(Number(id), req.user);
     if(!user){
         return {
             message: 'User not found',
@@ -67,9 +72,10 @@ export class UserController {
       data: user,
     };
   }
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    const user= await this.updateUserUseCase.execute(Number(id), body);
+  async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto,@Req() req:any) {
+    const user= await this.updateUserUseCase.execute(Number(id), body, req.user);
     if(!user){
         return {
             message: 'User update failed',
